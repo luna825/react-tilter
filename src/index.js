@@ -1,9 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const isNode = typeof window === 'undefined'
-if (!isNode){
-  require('./style/index.css')
-}
+import Tilter from './tilter'
 
-ReactDOM.render(<h1 className='title'>Hello</h1>,document.getElementById('app'))
+ReactDOM.render(<Tilter />,document.getElementById('app'))
