@@ -1,3 +1,52 @@
+
+*, *::after, *::before { -webkit-box-sizing: border-box; box-sizing: border-box; }
+body {
+  font-family: 'Roboto','Helvetica Neue', Helvetica, 'Segoe UI', Arial, sans-serif;
+  color: #463f51;
+  background: #222127;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.js .loading::before{
+  content: '';
+  position: fixed;
+  color: #fff;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(206, 209, 223, 0.9);
+  z-index: 100;
+  text-align: center;
+  display: flex;
+}
+
+.js .loading::after{
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 54px;
+  height: 75px;
+  margin: -35px 0 0 -27px;
+  pointer-events: none;
+  z-index: 10000;
+  border: 4px solid #fff;
+  transition: opacity 0.3s;
+  animation: loaderAnim 0.8s ease-out infinite alternate forwards;
+}
+
+
+@keyframes loaderAnim {
+  to {
+    opacity: 0.3;
+    -webkit-transform: translate3d(0,-100px,0);
+    transform: translate3d(0,-100px,0);
+  }
+}
+
 .tilter {
   position: relative;
   display: block;
@@ -7,6 +56,7 @@
   margin: 1.5em 2.5em;
   color: #fff;
   perspective: 1000px;
+
 }
 
 .tilter * {

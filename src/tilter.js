@@ -1,7 +1,9 @@
 import React, {Component, PropTypes} from 'react'
+import anime from 'animejs'
 
 import img from './assets/images/1.jpg'
 import './assets/style/tilter.css'
+
 
 export default class TilTer extends Component {
 
@@ -60,6 +62,7 @@ export default class TilTer extends Component {
 
   constructor(props){
     super(props)
+    this.animeDom = [];
   }
 
   componentDidMount() {
@@ -71,6 +74,10 @@ export default class TilTer extends Component {
         obj[k] = [-1*obj[k],obj[k]];
       }
     }
+  }
+
+  _addAnimeDom = (newDom) =>{
+    this.animeDom = [...this.animeDom, newDom]
   }
 
   handleMove = ({pageX, pageY}) => {
@@ -117,33 +124,43 @@ export default class TilTer extends Component {
   }
 
   handleLeave = () =>{
-    this.setState({
-      imgWrapper:{},
-      lines:{},
-      caption:{},
-      shine:{},
-      overlay:{}
+    anime({
+      targets: this.animeDom,
+      duration:1200,
+      easing:'easeOutElastic',
+      elasticity:600,
+      translateX: 0,
+      translateY: 0,
+      translateZ: 0,
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0
     })
   }
 
+  handleEnter = () =>{
+    anime.remove(this.animeDom)
+  }
+
   render(){
-    const {imgWrapper, lines, caption, shine, overlay} = this.state;
+    const {imgWrapper, lines, caption, shine, overlay, animeDom} = this.state;
 
     return(
       <a className="tilter" href="#" 
         ref={(dom)=>{this.root = dom}}
         onMouseMove={this.handleMove}
         onMouseLeave= {this.handleLeave}
+        onMouseEnter={this.handleEnter}
       >
-        <figure className="tilter_figure" style={{...imgWrapper}}> 
+        <figure className="tilter_figure" style={{...imgWrapper}} ref={this._addAnimeDom}> 
           <img className="tilter_image" src={img} alt=""/>
-          <div className="tilter_deco tilter_deco_shine"><div style={shine}></div></div>
-          <div style={overlay} className="tilter_deco tilter_deco_overlay"></div>
-          <figcaption style={caption} className="tilter_caption">
+          <div className="tilter_deco tilter_deco_shine"><div ref={this._addAnimeDom} style={shine}></div></div>
+          <div ref={this._addAnimeDom} style={overlay} className="tilter_deco tilter_deco_overlay"></div>
+          <figcaption ref={this._addAnimeDom} style={caption} className="tilter_caption">
             <h3 className="tilter_title">Helen Portland</h3>
             <p className="tilter_description">Seattle</p>
           </figcaption>
-          <svg style={lines} className="tilter_deco tilter_deco_lines" viewBox="0 0 300 415">
+          <svg ref={this._addAnimeDom} style={lines} className="tilter_deco tilter_deco_lines" viewBox="0 0 300 415">
             <path d="M20.5,20.5h260v375h-260V20.5z" />
           </svg>
         </figure>

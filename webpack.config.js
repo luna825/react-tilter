@@ -1,6 +1,37 @@
 var path = require('path')
 var webpack = require('webpack')
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+var plugins = [
+  new webpack.DefinePlugin({
+    'process.env':{
+      NODE_ENV:JSON.stringify(process.env.NODE_ENV)
+    }
+  }),
+  new webpack.optimize.CommonsChunkPlugin({
+    name:'commons',
+    filename:'commons.js'
+  }),
+  new ExtractTextPlugin("styles.css")
+]
+
+console.log(process.env.NODE_ENV)
+
+if(process.env.NODE_ENV === 'production'){
+  plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      test: /(\.jsx|\.js)$/,
+      compress: {
+        warnings: false
+      },
+      output: {
+        comments: false,  // remove all comments
+      },
+    })
+  );
+}else{
+  plugins.push(new webpack.HotModuleReplacementPlugin())
+}
 
 var config = {
   entry: [
@@ -24,12 +55,10 @@ var config = {
         }
       },
       {test: /\.(jpe?g|png|gif|svg)$/, loader: 'url?limit=1024&name=img/[name].[ext]'},
-      {test: /\.css$/, loader: 'style!css'}
+      {test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader","css-loader")}
     ]
   },
-  plugins:[
-    new webpack.HotModuleReplacementPlugin()
-  ]
+  plugins:plugins
 }
 
 module.exports = config
