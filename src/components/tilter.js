@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import anime from 'animejs'
 
-import img from './assets/images/1.jpg'
-import './assets/style/tilter.css'
+import img from '../img/1.jpg'
+import '../css/tilter.css'
 
 
 export default class TilTer extends Component {
@@ -15,55 +15,41 @@ export default class TilTer extends Component {
     overlay:{}
   };
 
-  static defaultProps = {
-    movement:
-    {
-      imgWrapper : {
-          translation : {x: 0, y: 0, z: 0},
-          rotation : {x: -5, y: 5, z: 0},
-          reverseAnimation : {
-            duration : 1200,
-            easing : 'easeOutElastic',
-            elasticity : 600
-          }
-        },
-      lines : {
-        translation : {x: 10, y: 10, z: [0,10]},
-        reverseAnimation : {
-          duration : 1000,
-          easing : 'easeOutExpo',
-          elasticity : 600
-        }
-      },
-      overlay : {
-        translation : {x: 10, y: -10, z: 0},
-        rotation : {x: 0, y: 0, z: 2},
-        reverseAnimation : {duration : 2000, easing : 'easeOutExpo'}
-      },
-      caption : {
-        translation : {x: 20, y: 20, z: 0},
-        rotation : {x: 0, y: 0, z: 0},
-        reverseAnimation : {
-          duration : 1500,
-          easing : 'easeOutElastic',
-          elasticity : 600
-        }
-      },
-      shine : {
-        translation : {x: 50, y: 50, z: 0},
-        reverseAnimation : {
-          duration : 1200,
-          easing : 'easeOutElastic',
-          elasticity: 600
-        }
-      }
+  defaultMovement = {
+    imgWrapper : {
+      translation : {x: 10, y: 10, z: 30},
+      rotation : {x: 0, y: -10, z: 0},
+      reverseAnimation : {duration : 200, easing : 'easeOutQuad'}
+    },
+    lines : {
+      translation : {x: 10, y: 10, z: [0,70]},
+      rotation : {x: 0, y: 0, z: -2},
+      reverseAnimation : {duration : 2000, easing : 'easeOutExpo'}
+    },
+    caption : {
+      rotation : {x: 0, y: 0, z: 2},
+      reverseAnimation : {duration : 200, easing : 'easeOutQuad'}
+    },
+    overlay : {
+      translation : {x: 10, y: -10, z: 0},
+      rotation : {x: 0, y: 0, z: 2},
+      reverseAnimation : {duration : 2000, easing : 'easeOutExpo'}
+    },
+    shine : {
+      translation : {x: 100, y: 100, z: 0},
+      reverseAnimation : {duration : 200, easing : 'easeOutQuad'}
     }
-  }
+  };
+
+  static propTypes = {
+
+  };
 
   constructor(props){
     super(props)
-    this.animeDom = [];
+    this.movement = Object.assign({}, this.defaultMovement, this.props.movement)
   }
+
 
   componentDidMount() {
   }
@@ -76,22 +62,17 @@ export default class TilTer extends Component {
     }
   }
 
-  _addAnimeDom = (newDom) =>{
-    this.animeDom = [...this.animeDom, newDom]
-  }
-
   handleMove = ({pageX, pageY}) => {
     const bodyScrollTop = document.body.scrollTop;
     const bodyScrollLeft = document.body.scrollLeft;
     const offsets = this.root.getBoundingClientRect();
     const offsetX = pageX - bodyScrollLeft - offsets.left;
     const offsetY = pageY - bodyScrollTop - offsets.top;
-    const {movement} = this.props;
 
-    for (let key in movement){
+    for (let key in this.movement){
 
-      const t = movement[key].translation || {x:0,y:0,z:0}
-      const r = movement[key].rotation || {x:0,y:0,z:0}
+      const t = this.movement[key].translation || {x:0,y:0,z:0}
+      const r = this.movement[key].rotation || {x:0,y:0,z:0}
 
       this._setRange(t)
       this._setRange(r)
@@ -109,7 +90,6 @@ export default class TilTer extends Component {
         }
       }
 
-
       this.setState({
         [key]:{
           transform: 
@@ -124,22 +104,25 @@ export default class TilTer extends Component {
   }
 
   handleLeave = () =>{
-    anime({
-      targets: this.animeDom,
-      duration:1200,
-      easing:'easeOutElastic',
-      elasticity:600,
-      translateX: 0,
-      translateY: 0,
-      translateZ: 0,
-      rotateX: 0,
-      rotateY: 0,
-      rotateZ: 0
+
+    Object.keys(this.refs).forEach(key=>{
+      anime({
+        targets: this.refs[key],
+        translateX: 0,
+        translateY: 0,
+        translateZ: 0,
+        rotateX: 0,
+        rotateY: 0,
+        rotateZ: 0,
+        ...this.movement[key].reverseAnimation
+      })
     })
   }
 
   handleEnter = () =>{
-    anime.remove(this.animeDom)
+    for (let key in this.refs){
+      anime.remove(this.refs[key])
+    }
   }
 
   render(){
@@ -152,15 +135,15 @@ export default class TilTer extends Component {
         onMouseLeave= {this.handleLeave}
         onMouseEnter={this.handleEnter}
       >
-        <figure className="tilter_figure" style={{...imgWrapper}} ref={this._addAnimeDom}> 
+        <figure className="tilter_figure" style={{...imgWrapper}} ref="imgWrapper"> 
           <img className="tilter_image" src={img} alt=""/>
-          <div className="tilter_deco tilter_deco_shine"><div ref={this._addAnimeDom} style={shine}></div></div>
-          <div ref={this._addAnimeDom} style={overlay} className="tilter_deco tilter_deco_overlay"></div>
-          <figcaption ref={this._addAnimeDom} style={caption} className="tilter_caption">
+          <div className="tilter_deco tilter_deco_shine"><div ref="shine" style={shine}></div></div>
+          <div ref="overlay" style={overlay} className="tilter_deco tilter_deco_overlay"></div>
+          <figcaption ref="caption" style={caption} className="tilter_caption">
             <h3 className="tilter_title">Helen Portland</h3>
             <p className="tilter_description">Seattle</p>
           </figcaption>
-          <svg ref={this._addAnimeDom} style={lines} className="tilter_deco tilter_deco_lines" viewBox="0 0 300 415">
+          <svg ref="lines" style={lines} className="tilter_deco tilter_deco_lines" viewBox="0 0 300 415">
             <path d="M20.5,20.5h260v375h-260V20.5z" />
           </svg>
         </figure>

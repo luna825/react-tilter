@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import Tilter from './tilter'
-import ImagesLoader from './imagesLoader'
+import Tilter from './components/tilter'
+import ImagesLoader from './components/imagesLoader'
 
 ReactDOM.render(
   <ImagesLoader>
