@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import anime from 'animejs'
+import {deepAssign} from '../utils/util'
 
-import img from '../img/1.jpg'
 import '../css/tilter.css'
 
 
@@ -17,37 +17,64 @@ export default class TilTer extends Component {
 
   defaultMovement = {
     imgWrapper : {
-      translation : {x: 10, y: 10, z: 30},
-      rotation : {x: 0, y: -10, z: 0},
-      reverseAnimation : {duration : 200, easing : 'easeOutQuad'}
+      translation : {x: 0, y: 0, z: 0},
+      rotation : {x: -5, y: 5, z: 0},
+      reverseAnimation : {
+        duration : 1200,
+        easing : 'easeOutElastic',
+        elasticity : 600
+      }
     },
     lines : {
-      translation : {x: 10, y: 10, z: [0,70]},
-      rotation : {x: 0, y: 0, z: -2},
-      reverseAnimation : {duration : 2000, easing : 'easeOutExpo'}
+      translation : {x: 10, y: 10, z: [0,10]},
+      reverseAnimation : {
+        duration : 1000,
+        easing : 'easeOutExpo',
+        elasticity : 600
+      }
     },
     caption : {
-      rotation : {x: 0, y: 0, z: 2},
-      reverseAnimation : {duration : 200, easing : 'easeOutQuad'}
+      translation : {x: 20, y: 20, z: 0},
+      rotation : {x: 0, y: 0, z: 0},
+      reverseAnimation : {
+        duration : 1500,
+        easing : 'easeOutElastic',
+        elasticity : 600
+      }
     },
     overlay : {
-      translation : {x: 10, y: -10, z: 0},
-      rotation : {x: 0, y: 0, z: 2},
-      reverseAnimation : {duration : 2000, easing : 'easeOutExpo'}
+      translation : {x: 10, y: 10, z: [0,50]},
+      reverseAnimation : {
+        duration : 500,
+        easing : 'easeOutExpo'
+      }
     },
+    
     shine : {
-      translation : {x: 100, y: 100, z: 0},
-      reverseAnimation : {duration : 200, easing : 'easeOutQuad'}
+      translation : {x: 50, y: 50, z: 0},
+      reverseAnimation : {
+        duration : 1200,
+        easing : 'easeOutElastic',
+        elasticity: 600
+      }
     }
   };
 
   static propTypes = {
-
+    movement:PropTypes.shape({
+      imgWrapper:PropTypes.object,
+      lines:PropTypes.object,
+      caption:PropTypes.object,
+      overlay:PropTypes.object,
+      shine:PropTypes.object
+    }),
+    img:PropTypes.string,
+    className: PropTypes.string
   };
 
   constructor(props){
     super(props)
-    this.movement = Object.assign({}, this.defaultMovement, this.props.movement)
+    this.movement = deepAssign({}, this.defaultMovement,this.props.movement )
   }
 
 
@@ -127,9 +154,10 @@ export default class TilTer extends Component {
 
   render(){
     const {imgWrapper, lines, caption, shine, overlay, animeDom} = this.state;
+    const {img, className} = this.props;
 
     return(
-      <a className="tilter" href="#" 
+      <a className={"tilter " + className} href="#" 
         ref={(dom)=>{this.root = dom}}
         onMouseMove={this.handleMove}
         onMouseLeave= {this.handleLeave}
