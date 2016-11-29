@@ -36,3 +36,15 @@
     transform: translate3d(0,-100px,0);
   }
 }
+
+.content{
+  padding: 0 0 4em;
+  height: 800px;
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  max-width: 760px;
+}

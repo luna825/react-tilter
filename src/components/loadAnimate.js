@@ -31,10 +31,10 @@ export default class LoadAnimate extends Component{
     const {imagesLoading} = this.state;
 
     return(
-      <g ref={(dom)=>this.root=dom}>
+      <main className='content' ref={(dom)=>this.root=dom}>
         { imagesLoading && this.renderLoadAnimate() }      
         {this.props.children}
-      </g>
+      </main>
     )
   }
 }

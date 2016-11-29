@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom'
 import Tilter from './components/tilter'
 import LoadAnimate from './components/loadAnimate'
 
+import './css/normalize.css'
+import './css/demo.css'
+
 const requireContext = require.context("./img", true, /^\.\/.*\.jpg$/);
 const images = requireContext.keys().map(requireContext);
 
@@ -164,28 +167,28 @@ const tiltSettings = [
 }];
 
 
-const tilters = ()=>{
-  return(
-    <div>111</div>
-  )
+class Demo extends React.Component {
+
+  constructor(props){
+    super(props)
+  }
+
+  render(){
+    return(
+      <LoadAnimate>
+      {images.map((img, i)=>{
+        return <Tilter img={img} key={i}
+          movement={tiltSettings[parseInt(i / 2)].movement}
+          className={'tilter_' + i} />
+        })}
+      </LoadAnimate>
+    )
+  }
 }
 
 
 
 ReactDOM.render(
-  <LoadAnimate>
-    {images.map((img, i)=>{
-      let idx = parseInt(i/2);
-      console.log(idx)
-      return <Tilter
-       movement={tiltSettings[idx].movement} 
-       img={img} 
-       className={'titler_' + i}
-       key={i} 
-      />
-    })}
-
-    <tilters />
-  </LoadAnimate>
+  <Demo />
   ,document.getElementById('app'))
 

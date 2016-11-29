@@ -4,7 +4,6 @@ import {deepAssign} from '../utils/util'
 
 import '../css/tilter.css'
 
-
 export default class TilTer extends Component {
 
   state = {
